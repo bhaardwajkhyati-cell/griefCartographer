@@ -1,6 +1,6 @@
 'use client';
 
-import { useState , useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import { markQuestionAsUsed } from "../../lib/questionManager";
@@ -9,7 +9,7 @@ import ReflectionPrompt from "../components/Reflection";
 import { saveDrawing } from '../../lib/saveDrawing';
 
 
-export default function Express() {
+function ExpressContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const canvasRef = useRef(null);
@@ -19,28 +19,27 @@ export default function Express() {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
 
-  // Called when the user clicks Continue → opens the popup first.
   const handleContinue = () => {
     if (!selectedQuestion) return;
     setShowPopup(true);
   };
 
-  // Called when the user confirms "Release" inside the popup.
   const handleRelease = async () => {
-  const result = await saveDrawing({
-    canvasRef,
-    phase,
-    question: selectedQuestion,
-  });
+    const result = await saveDrawing({
+      canvasRef,
+      phase,
+      question: selectedQuestion,
+    });
 
-  if (result.success) {
-    markQuestionAsUsed(selectedQuestion.id);
-    setShowPopup(false);
-    router.push('/gallery'); // or wherever next
-  } else {
-    alert('Something went wrong saving your drawing. Please try again.');
-  }
-};
+    if (result.success) {
+      markQuestionAsUsed(selectedQuestion.id);
+      setShowPopup(false);
+      router.push('/gallery');
+    } else {
+      alert('Something went wrong saving your drawing. Please try again.');
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center px-8 py-10">
 
@@ -71,22 +70,12 @@ export default function Express() {
       </motion.div>
 
       {/* Drawing Canvas */}
-      <DrawingCanvas canvasRef={canvasRef}/>
+      <DrawingCanvas canvasRef={canvasRef} />
 
       {/* Continue Button */}
       <button
         onClick={handleContinue}
-        className="
-          mt-10
-          px-8
-          py-3
-          border
-          border-gray-600
-          rounded-full
-          hover:bg-white
-          hover:text-black
-          transition
-        "
+        className="mt-10 px-8 py-3 border border-gray-600 rounded-full hover:bg-white hover:text-black transition"
       >
         Continue →
       </button>
@@ -109,14 +98,11 @@ export default function Express() {
               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
               className="mx-4 max-w-md w-full bg-[#111111] border border-gray-700 rounded-2xl p-8 flex flex-col items-center gap-6 text-center"
             >
-              {/* Subtle vertical accent */}
-             
-
               <h2 className="text-white text-xl font-light tracking-wide leading-relaxed">
                 Once you release this, you will not be able to edit the image or get access back.
               </h2>
 
-              <p className="text-gray-500 text-sm leading-relaxed" style={{ fontFamily: 'var(--font-dancing)', fontSize: '1.5rem' }}>
+              <p className="text-gray-500 leading-relaxed" style={{ fontFamily: 'var(--font-dancing)', fontSize: '1.5rem' }}>
                 Like life — let this go.
               </p>
 
@@ -129,7 +115,7 @@ export default function Express() {
                 </button>
                 <button
                   onClick={handleRelease}
-                  className="flex-1 px-4 py-2.5 bg-white text-black rounded-full hover:bg-gray-200 transition text-sm font-medium font-family"
+                  className="flex-1 px-4 py-2.5 bg-white text-black rounded-full hover:bg-gray-200 transition text-sm font-medium"
                 >
                   Release
                 </button>
@@ -140,5 +126,13 @@ export default function Express() {
       </AnimatePresence>
 
     </main>
+  );
+}
+
+export default function Express() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0a]" />}>
+      <ExpressContent />
+    </Suspense>
   );
 }
