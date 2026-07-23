@@ -72,27 +72,24 @@ export default function Theme() {
         </motion.p>
 
         {/* Phase cards */}
-        <div className="grid grid-cols-2 gap-10 justify-items-center">
-
-          {phases.map((phase, index) => (
-          <motion.div
-            key={phase.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: index * 0.2 }}
-            onClick={() => router.push(`/express?phase=${phase.id}`)}
-            className={`border border-gray-700 rounded-xl p-8 w-64 flex flex-col items-center text-center cursor-pointer transition-all duration-500 hover:border-gray-300 hover:bg-[#161616] hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]
-              ${index === 4 ? 'col-span-2' : ''}
-            `}
-          >
-            <span className="text-5xl text-gray-300 mb-6">{phase.icon}</span>
-            <h2 className="text-white text-xl tracking-wide mb-4">{phase.name}</h2>
-            <p className="text-gray-400 text-sm leading-6">{phase.description}</p>
-          </motion.div>
-        ))}
-
-        </div>
-
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-10 justify-items-center">
+      {phases.map((phase, index) => (
+        <motion.div
+          key={phase.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: index * 0.2 }}
+          onClick={() => router.push(`/express?phase=${phase.id}`)}
+          className={`border border-gray-700 rounded-xl p-8 w-64 flex flex-col items-center text-center cursor-pointer transition-all duration-500 hover:border-gray-300 hover:bg-[#161616] hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]
+            ${index === 4 ? 'col-span-2 lg:col-span-1' : ''}
+          `}
+        >
+          <span className="text-5xl text-gray-300 mb-6">{phase.icon}</span>
+          <h2 className="text-white text-xl tracking-wide mb-4">{phase.name}</h2>
+          <p className="text-gray-400 text-sm leading-6">{phase.description}</p>
+        </motion.div>
+      ))}
+    </div>
         {/* Bottom line */}
         <motion.p
           initial={{ opacity: 0 }}
