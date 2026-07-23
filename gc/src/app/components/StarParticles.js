@@ -1,6 +1,6 @@
 export default function StarParticles() {
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
       {[
         { top: '10%', left: '20%', duration: '3s', delay: '0s' },
         { top: '25%', left: '50%', duration: '4.5s', delay: '2s' },
