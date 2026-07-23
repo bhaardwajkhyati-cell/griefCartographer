@@ -36,20 +36,33 @@ export default function DrawingCanvas({ canvasRef: externalCanvasRef }) {
 
     if (externalCanvasRef) externalCanvasRef.current = canvas;
 
-    canvas.width = 1000;
-    canvas.height = 600;
+    const setupCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
 
-    const ctx = canvas.getContext('2d');
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
 
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = color;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
 
-    ctx.fillStyle = '#111111';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = color;
 
-    ctxRef.current = ctx;
+      ctx.fillStyle = '#111111';
+      ctx.fillRect(0, 0, rect.width, rect.height);
+
+      ctxRef.current = ctx;
+    };
+
+    setupCanvas();
+
+    const observer = new ResizeObserver(setupCanvas);
+    observer.observe(canvas);
+
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -68,14 +81,14 @@ export default function DrawingCanvas({ canvasRef: externalCanvasRef }) {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     return {
-      x: (e.clientX - rect.left) * (canvas.width / rect.width),
-      y: (e.clientY - rect.top) * (canvas.height / rect.height),
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
     };
   };
 
   const getCursorPosition = (e) => {
-    const wrapper = wrapperRef.current;
-    const rect = wrapper.getBoundingClientRect();
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
     return {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
