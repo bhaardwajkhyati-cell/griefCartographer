@@ -18,6 +18,7 @@ function ExpressContent() {
 
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleContinue = () => {
     if (!selectedQuestion) return;
@@ -25,6 +26,9 @@ function ExpressContent() {
   };
 
   const handleRelease = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+
     const result = await saveDrawing({
       canvasRef,
       phase,
@@ -37,6 +41,7 @@ function ExpressContent() {
       router.push('/gallery');
     } else {
       alert('Something went wrong saving your drawing. Please try again.');
+      setIsSaving(false);
     }
   };
 
@@ -115,9 +120,10 @@ function ExpressContent() {
                 </button>
                 <button
                   onClick={handleRelease}
-                  className="flex-1 px-4 py-2.5 bg-white text-black rounded-full hover:bg-gray-200 transition text-sm font-medium"
+                  disabled={isSaving}
+                  className="flex-1 px-4 py-2.5 bg-white text-black rounded-full hover:bg-gray-200 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Release
+                  {isSaving ? 'Releasing...' : 'Release'}
                 </button>
               </div>
             </motion.div>
