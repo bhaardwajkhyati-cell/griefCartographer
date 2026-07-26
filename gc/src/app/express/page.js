@@ -57,9 +57,11 @@ function ExpressContent() {
           ← Back
         </button>
 
-        <p className="text-gray-500 tracking-widest text-sm">
-          Reflection
-        </p>
+        <button
+          onClick={() => router.push('/gallery')}
+          className="px-6 py-2.5 border border-gray-700 rounded-full text-gray-400 hover:text-white hover:border-gray-400 transition text-sm tracking-widest"
+          > View gallery 
+        </button>
       </div>
 
       {/* Reflection Question */}
