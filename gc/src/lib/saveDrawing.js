@@ -1,5 +1,15 @@
 import { supabase } from './supabase';
 
+function getSessionId() {
+  if (typeof window === 'undefined') return null;
+  let id = localStorage.getItem('gc_session_id');
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem('gc_session_id', id);
+  }
+  return id;
+}
+
 export async function saveDrawing({ canvasRef, phase, question }) {
   try {
     // 1. Convert canvas to a PNG blob
@@ -30,6 +40,7 @@ export async function saveDrawing({ canvasRef, phase, question }) {
       question_id: question?.id || null,
       question_text: question?.text || null,
       image_url: imageUrl,
+      session_id: getSessionId(),
     });
 
     if (dbError) throw dbError;
