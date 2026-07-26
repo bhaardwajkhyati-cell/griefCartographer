@@ -12,18 +12,27 @@ export default function Gallery() {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    async function fetchDrawings() {
-      const { data, error } = await supabase
-        .from('drawings')
-        .select('*')
-        .order('created_at', { ascending: false });
+  async function fetchDrawings() {
+    const sessionId = typeof window !== 'undefined'
+      ? localStorage.getItem('gc_session_id')
+      : null;
 
-      if (!error) setDrawings(data);
-      setLoading(false);
+    let query = supabase
+      .from('drawings')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (sessionId) {
+      query = query.neq('session_id', sessionId);
     }
 
-    fetchDrawings();
-  }, []);
+    const { data, error } = await query;
+    if (!error) setDrawings(data);
+    setLoading(false);
+  }
+
+  fetchDrawings();
+}, []);
 
   // Split into 3 columns for masonry
   const columns = [[], [], []];
