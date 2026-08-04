@@ -33,7 +33,7 @@ const phases = [
     id: 'growth',
     name: 'Growth',
     description: 'Grief remains, but it has begun to change its shape.',
-    icon: '✦',
+    icon: '⟰',
   },
 ]
 
