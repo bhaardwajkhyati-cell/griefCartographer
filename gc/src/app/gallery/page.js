@@ -1,158 +1,94 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { supabase } from '../../lib/supabase';
+import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { fetchOtherDrawings } from '@/lib/saveDrawing'
+
+const BUBBLE_SIZES = [180, 220, 150, 260, 190, 230]
+
+function floatAnimation(index) {
+  const duration = 8 + (index % 5) * 1.5
+  const delay = (index % 4) * 0.6
+  const drift = 12 + (index % 3) * 6
+  return {
+    y: [0, -drift, 0, drift * 0.6, 0],
+    x: [0, drift * 0.4, 0, -drift * 0.3, 0],
+    transition: {
+      duration,
+      delay,
+      repeat: Infinity,
+      ease: 'easeInOut',
+    },
+  }
+}
 
 export default function Gallery() {
-  const router = useRouter();
-  const [drawings, setDrawings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(null);
+  const [drawings, setDrawings] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-  async function fetchDrawings() {
-    const sessionId = typeof window !== 'undefined'
-      ? localStorage.getItem('gc_session_id')
-      : null;
-
-    let query = supabase
-      .from('drawings')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (sessionId) {
-      query = query.neq('session_id', sessionId);
+    let mounted = true
+    fetchOtherDrawings().then((res) => {
+      if (mounted && res.success) setDrawings(res.drawings)
+      if (mounted) setLoading(false)
+    })
+    return () => {
+      mounted = false
     }
-
-    const { data, error } = await query;
-    if (!error) setDrawings(data);
-    setLoading(false);
-  }
-
-  fetchDrawings();
-}, []);
-
-  // Split into 3 columns for masonry
-  const columns = [[], [], []];
-  drawings.forEach((drawing, i) => {
-    columns[i % 3].push(drawing);
-  });
+  }, [])
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white px-6 py-10">
+    <main className="min-h-screen bg-[#0a0a0a] relative overflow-hidden py-24 px-6">
+      {/* Ambient fog — same device as the landing page, second one in sage */}
+      <div className="absolute top-1/4 left-1/3 w-[600px] h-[400px] rounded-full bg-white opacity-[0.05] blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[350px] rounded-full bg-[#7fb8a3] opacity-[0.06] blur-[110px] pointer-events-none" />
 
-      {/* Header */}
-      <div className="w-full max-w-6xl mx-auto flex justify-between items-center mb-12">
-        <button
-          onClick={() => router.push('/')}
-          className="text-gray-500 hover:text-white transition"
-        >
-          ← Back
-        </button>
-        <h1 className="text-sm tracking-[0.35em] text-gray-500 uppercase">
-          The Gallery
-        </h1>
-        <div className="w-16" /> {/* spacer */}
-      </div>
+      <h1 className="relative z-10 text-center text-white text-3xl font-light tracking-widest mb-2">
+        Others, Still Here
+      </h1>
+      <p className="relative z-10 text-center text-gray-500 text-xl mb-16 font-[family-name:var(--font-dancing)]">
+        what they let go of
+      </p>
 
-      {/* Loading state */}
-      {loading && (
-        <div className="flex justify-center items-center h-64">
-          <p className="text-gray-600 tracking-widest text-sm animate-pulse">
-            gathering grief...
-          </p>
-        </div>
-      )}
-
-      {/* Empty state */}
-      {!loading && drawings.length === 0 && (
-        <div className="flex justify-center items-center h-64">
-          <p className="text-gray-600 text-lg">
-            No drawings yet. Be the first.
-          </p>
-        </div>
-      )}
-
-      {/* Masonry grid */}
-      {!loading && drawings.length > 0 && (
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4 items-start">
-          {columns.map((col, colIndex) => (
-            <div key={colIndex} className="flex flex-col gap-4">
-              {col.map((drawing, i) => (
-                <motion.div
-                  key={drawing.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 + colIndex * 0.02 }}
-                  onClick={() => setSelected(drawing)}
-                  className="group relative cursor-pointer rounded-xl overflow-hidden border border-gray-800 hover:border-gray-600 transition"
+      {loading ? (
+        <p className="relative z-10 text-center text-gray-600 text-sm">
+          gathering fragments…
+        </p>
+      ) : drawings.length === 0 ? (
+        <p className="relative z-10 text-center text-gray-600 text-sm">
+          nothing has drifted here yet
+        </p>
+      ) : (
+        <div className="relative z-10 flex flex-wrap justify-center items-start gap-x-8 gap-y-16 max-w-5xl mx-auto">
+          {drawings.map((d, i) => {
+            const size = BUBBLE_SIZES[i % BUBBLE_SIZES.length]
+            return (
+              <motion.div
+                key={d.id}
+                animate={floatAnimation(i)}
+                className="flex flex-col items-center"
+                style={{ width: size }}
+              >
+                <div
+                  className="rounded-full overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.04)] bg-white/[0.02] backdrop-blur-sm"
+                  style={{ width: size, height: size }}
                 >
                   <img
-                    src={drawing.image_url}
-                    alt={drawing.question_text}
-                    className="w-full object-cover"
+                    src={d.image_url}
+                    alt=""
+                    className="w-full h-full object-contain"
                   />
-
-                  {/* Prompt overlay on hover */}
-                  <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                    <p className="text-white text-sm font-light leading-relaxed">
-                      {drawing.question_text}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          ))}
+                </div>
+                {d.question_text && (
+                  <p className="mt-3 text-center text-gray-500 text-xs leading-snug max-w-[85%]">
+                    {d.question_text}
+                  </p>
+                )}
+              </motion.div>
+            )
+          })}
         </div>
       )}
-
-      {/* Lightbox — click to expand */}
-      {selected && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setSelected(null)}
-          className="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            onClick={(e) => e.stopPropagation()}
-            className="relative max-w-2xl w-full bg-[#111111] border border-gray-700 rounded-2xl overflow-hidden"
-          >
-            <img
-              src={selected.image_url}
-              alt={selected.question_text}
-              className="w-full object-cover"
-            />
-
-            <div className="p-6 flex flex-col gap-2">
-              <p className="text-white font-light text-lg leading-relaxed">
-                {selected.question_text}
-              </p>
-              <p className="text-gray-600 text-xs tracking-widest uppercase mt-1">
-                {new Date(selected.created_at).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </p>
-            </div>
-
-            <button
-              onClick={() => setSelected(null)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black transition text-sm"
-            >
-              ✕
-            </button>
-          </motion.div>
-        </motion.div>
-      )}
-
     </main>
-  );
+  )
 }

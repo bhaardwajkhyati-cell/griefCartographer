@@ -1,40 +1,26 @@
 import { supabase } from './supabase';
-
-function getSessionId() {
-  if (typeof window === 'undefined') return null;
-  let id = localStorage.getItem('gc_session_id');
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem('gc_session_id', id);
-  }
-  return id;
-}
+import { getSessionId } from './session';
 
 export async function saveDrawing({ canvasRef, phase, question }) {
   try {
-    // 1. Convert canvas to a PNG blob
     const blob = await new Promise((resolve) =>
       canvasRef.current.toBlob(resolve, 'image/png')
     );
 
-    // 2. Generate a unique filename
-    const filename = `drawing-${Date.now()}.png`;
+    const filename = `drawing-${Date.now()}-${crypto.randomUUID()}.png`;
 
-    // 3. Upload image to Supabase Storage
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('drawings')
       .upload(filename, blob, { contentType: 'image/png' });
 
     if (uploadError) throw uploadError;
 
-    // 4. Get the public URL of the uploaded image
     const { data: urlData } = supabase.storage
       .from('drawings')
       .getPublicUrl(filename);
 
     const imageUrl = urlData.publicUrl;
 
-    // 5. Save metadata to the drawings table
     const { error: dbError } = await supabase.from('drawings').insert({
       phase,
       question_id: question?.id || null,
@@ -48,6 +34,27 @@ export async function saveDrawing({ canvasRef, phase, question }) {
     return { success: true, imageUrl };
   } catch (err) {
     console.error('Failed to save drawing:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function fetchOtherDrawings({ phase, limit = 50 } = {}) {
+  try {
+    let query = supabase
+      .from('drawings')
+      .select('*')
+      .neq('session_id', getSessionId())
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (phase) query = query.eq('phase', phase);
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    return { success: true, drawings: data };
+  } catch (err) {
+    console.error('Failed to fetch drawings:', err);
     return { success: false, error: err.message };
   }
 }
