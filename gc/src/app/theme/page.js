@@ -40,7 +40,7 @@ const phases = [
 export default function Theme() {
   const router = useRouter();
   return (
-    <main className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center relative overflow-hidden px-8">
+    <main className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center relative overflow-hidden px-8 pt-16">
 
       {/* Floating particles */}
       <StarParticles />
@@ -55,7 +55,7 @@ export default function Theme() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
-          className="text-white text-4xl font-light tracking-wide mb-4 text-center"
+          className="text-white text-4xl font-cursive tracking-wide mb-16 text-center"
         >
           Where does your grief wish to begin?
         </motion.h1>
@@ -65,7 +65,7 @@ export default function Theme() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 2, delay: 0.3 }}
-          className="text-gray-400 text-center max-w-2xl leading-7 mb-16"
+          className="text-gray-400 text-center max-w-2xl leading-7 mb-24"
         >
           Reflection begins in different places. Choose the space that feels
           closest to you today. There is no correct place to begin.
