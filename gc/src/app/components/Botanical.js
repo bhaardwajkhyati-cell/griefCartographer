@@ -9,7 +9,7 @@ export default function Botanical(){
     >
       <svg width="300" height="60" viewBox="0 0 300 60" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Main stem */}
-        <path d="M 20 30 Q 150 30 280 30" stroke="#8c96a7" strokeWidth="0.8" fill="none"/>
+        <path d="M 20 30 Q 150 30 280 30" stroke="#fafdff" strokeWidth="0.8" fill="none"/>
     
     {/* Left branches */}
         <path d="M 80 30 Q 70 20 60 15" stroke="#8c96a7" strokeWidth="0.6" fill="none"/>
@@ -22,7 +22,7 @@ export default function Botanical(){
         <path d="M 190 30 Q 200 18 208 12" stroke="#8c96a7" strokeWidth="0.6" fill="none"/>
     
     {/* Centre dot */}
-        <circle cx="150" cy="30" r="2" fill="#8c96a7"/>
+        <circle cx="150" cy="30" r="2" fill="#dde9ff"/>
     
     {/* Small leaves - left */}
         <ellipse cx="58" cy="14" rx="4" ry="2" transform="rotate(-30 58 14)" fill="#8c96a7" opacity="0.6"/>
