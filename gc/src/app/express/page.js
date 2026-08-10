@@ -106,11 +106,11 @@ function ExpressContent() {
               className="mx-4 max-w-md w-full bg-[#111111] border border-gray-700 rounded-2xl p-8 flex flex-col items-center gap-6 text-center"
             >
               <h2 className="text-white text-xl font-light tracking-wide leading-relaxed">
-                Once you release this, you will not be able to edit the image or get access back.
+                Once your drawing get Released you would not be able edit this and this drawing will be seen by everyone except you , without harming your privacy.
               </h2>
 
               <p className="text-gray-500 leading-relaxed" style={{ fontFamily: 'var(--font-dancing)', fontSize: '1.5rem' }}>
-                Like life — let this go.
+                just like in life we dont get anything back..
               </p>
 
               <div className="flex gap-3 mt-2 w-full">

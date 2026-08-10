@@ -15,19 +15,19 @@ const phases = [
     id: 'isolation',
     name: 'Isolation',
     description: 'Some grief is carried quietly, where no one else can reach.',
-    icon: '□',
+    icon: '◎',
   },
   {
     id: 'immersion',
     name: 'Immersion',
     description: 'Memories return again and again, asking to be felt.',
-    icon: '≈',
+    icon: '◉',
   },
   {
     id: 'exploration',
     name: 'Exploration',
     description: 'Questions appear where answers once seemed certain.',
-    icon: '◇',
+    icon: '↝',
   },
   {
     id: 'growth',
