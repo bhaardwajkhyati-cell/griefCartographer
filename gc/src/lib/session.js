@@ -1,48 +1,26 @@
-// A short, memorable code the user can write down and enter on
-// another device to continue the same session. This code IS the
-// session id — no server-side accounts table required.
+import { supabase } from './supabase';
 
-const ADJECTIVES = [
-  'amber', 'coral', 'dusky', 'faded', 'gentle', 'hollow', 'ivory',
-  'jade', 'lunar', 'misty', 'quiet', 'rustic', 'silver', 'tender',
-  'velvet', 'willow',
-];
-
-const NOUNS = [
-  'river', 'ember', 'harbor', 'meadow', 'orbit', 'petal', 'quarry',
-  'ridge', 'shadow', 'thicket', 'valley', 'canyon', 'grove', 'hollow',
-];
-
-function randomFrom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function generateRecoveryCode() {
-  const adjective = randomFrom(ADJECTIVES);
-  const noun = randomFrom(NOUNS);
-  const number = Math.floor(100 + Math.random() * 900); // 100-999
-  return `${adjective}-${noun}-${number}`;
-}
-
-const STORAGE_KEY = 'gc_session_id';
-
-export function getSessionId() {
-  if (typeof window === 'undefined') return null;
-
-  let id = localStorage.getItem(STORAGE_KEY);
-  if (!id) {
-    id = generateRecoveryCode();
-    localStorage.setItem(STORAGE_KEY, id);
+export async function getSessionId() {
+  if (typeof window === 'undefined') {
+    return null;
   }
-  return id;
-}
 
-export function restoreSessionId(code) {
-  if (typeof window === 'undefined') return null;
+  // Check whether we already have a Supabase session
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  const cleaned = code.trim().toLowerCase();
-  if (!cleaned) return null;
+  if (session?.user) {
+    return session.user.id;
+  }
 
-  localStorage.setItem(STORAGE_KEY, cleaned);
-  return cleaned;
+  // No session → create an anonymous Supabase user
+  const { data, error } = await supabase.auth.signInAnonymously();
+
+  if (error) {
+    console.error('Anonymous sign-in failed:', error);
+    return null;
+  }
+
+  return data.user.id;
 }

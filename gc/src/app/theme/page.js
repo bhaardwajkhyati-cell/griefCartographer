@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { motion } from 'framer-motion'
 import StarParticles from '../components/StarParticles'
 import Botanical from '../components/Botanical'
+import { useEffect } from "react";
+import { getSessionId } from "@/lib/session";
 
 const phases = [
   {
@@ -39,6 +41,11 @@ const phases = [
 
 export default function Theme() {
   const router = useRouter();
+  useEffect(() => {
+      getSessionId().then((id) => {
+        console.log("Supabase anonymous user ID:", id);
+      });
+    }, []);
   return (
     <main className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center relative overflow-hidden px-8 pt-16">
 
@@ -117,6 +124,7 @@ export default function Theme() {
         <Botanical />
 
       </div>
+      
     </main>
   )
 }

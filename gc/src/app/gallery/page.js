@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { fetchOtherDrawings } from '@/lib/saveDrawing'
+import { fetchReleasedDrawings } from '@/lib/saveDrawing'
 import { useRouter } from "next/navigation";
 
 const BUBBLE_SIZES = [180, 220, 150, 260, 190, 230]
@@ -31,7 +31,7 @@ export default function Gallery() {
 
   useEffect(() => {
     let mounted = true
-    fetchOtherDrawings().then((res) => {
+    fetchReleasedDrawings().then((res) => {
       if (mounted && res.success) setDrawings(res.drawings)
       if (mounted) setLoading(false)
     })

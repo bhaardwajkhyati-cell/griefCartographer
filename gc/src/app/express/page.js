@@ -40,7 +40,8 @@ function ExpressContent() {
       setShowPopup(false);
       router.push('/gallery');
     } else {
-      alert('Something went wrong saving your drawing. Please try again.');
+      console.error('Save drawing failed:', result.error);
+      alert(`Something went wrong saving your drawing. ${result.error}`);
       setIsSaving(false);
     }
   };
