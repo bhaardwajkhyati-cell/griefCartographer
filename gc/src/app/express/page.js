@@ -7,6 +7,7 @@ import { markQuestionAsUsed } from "../../lib/questionManager";
 import DrawingCanvas from "../components/DrawingCanvas";
 import ReflectionPrompt from "../components/Reflection";
 import { saveDrawing } from '../../lib/saveDrawing';
+import ThreadBreakOverlay from "../components/ThreadBreakOverlay";
 
 
 function ExpressContent() {
@@ -19,6 +20,7 @@ function ExpressContent() {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isBreaking, setIsBreaking] = useState(false);
 
   const handleContinue = () => {
     if (!selectedQuestion) return;
@@ -38,12 +40,16 @@ function ExpressContent() {
     if (result.success) {
       markQuestionAsUsed(selectedQuestion.id);
       setShowPopup(false);
-      router.push('/gallery');
+      setIsBreaking(true);
     } else {
       console.error('Save drawing failed:', result.error);
       alert(`Something went wrong saving your drawing. ${result.error}`);
       setIsSaving(false);
     }
+  };
+
+  const handleBreakComplete = () => {
+    router.push('/gallery');
   };
 
   return (
@@ -132,6 +138,11 @@ function ExpressContent() {
             </motion.div>
           </motion.div>
         )}
+      </AnimatePresence>
+
+      {/* Thread break animation, plays after successful save, then navigates to gallery */}
+      <AnimatePresence>
+        {isBreaking && <ThreadBreakOverlay onComplete={handleBreakComplete} />}
       </AnimatePresence>
 
     </main>
