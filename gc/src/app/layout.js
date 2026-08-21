@@ -12,7 +12,7 @@ const cormorant = Cormorant_Garamond({
     weight: ["400" , "700"],
  });
 export const metadata ={
-  title: "Greif Cartographer",
+  title: "Grief Cartographer",
   description: "Grief is not loss that can be seen.It is everything that makes you sad and cry"
 };
 
