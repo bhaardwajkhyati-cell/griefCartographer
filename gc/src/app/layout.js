@@ -12,8 +12,24 @@ const cormorant = Cormorant_Garamond({
     weight: ["400" , "700"],
  });
 export const metadata ={
+  metadataBase: new URL("https://griefcartographer.vercel.app"),
   title: "Grief Cartographer",
-  description: "Grief is not loss that can be seen.It is everything that makes you sad and cry",
+  description: "Grief Cartographer is a quiet space for reflection, expression, and navigating grief.",
+  keywords: ["Grief Cartographer", "grief support", "grief reflection", "emotional healing"],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Grief Cartographer",
+    description: "A quiet space for reflection, expression, and navigating grief.",
+    url: "https://griefcartographer.vercel.app/",
+    siteName: "Grief Cartographer",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   verification: {
     google: "9DVIdJQ2B32dn42Q9d8_J9JocoNLUWG2P98c-RzlBhM",
   },
