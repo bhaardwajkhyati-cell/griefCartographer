@@ -14,7 +14,9 @@ const cormorant = Cormorant_Garamond({
 export const metadata ={
   title: "Grief Cartographer",
   description: "Grief is not loss that can be seen.It is everything that makes you sad and cry",
-  google: "9DVIdJQ2B32dn42Q9d8_J9JocoNLUWG2P98c-RzlBhM",
+  verification: {
+    google: "9DVIdJQ2B32dn42Q9d8_J9JocoNLUWG2P98c-RzlBhM",
+  },
 };
 
 export default function RootLayout({children}){
