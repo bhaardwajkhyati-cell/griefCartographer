@@ -19,12 +19,31 @@ export const metadata ={
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
   openGraph: {
     title: "Grief Cartographer",
     description: "A quiet space for reflection, expression, and navigating grief.",
     url: "https://griefcartographer.vercel.app/",
     siteName: "Grief Cartographer",
     type: "website",
+    images: [
+      {
+        url: "/icon.png",
+        width: 512,
+        height: 512,
+        alt: "Grief Cartographer logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Grief Cartographer",
+    description: "A quiet space for reflection, expression, and navigating grief.",
+    images: ["/icon.png"],
   },
   robots: {
     index: true,
