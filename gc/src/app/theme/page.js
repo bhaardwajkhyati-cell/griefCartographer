@@ -91,7 +91,7 @@ export default function Theme() {
           ${index === 4 ? 'col-span-2 lg:col-span-1' : ''}
         `}
         >
-          <span className="text-5xl text-gray-300 mb-6">{phase.icon}</span>
+          <span className="text-6xl md:text-7xl leading-none text-gray-300 mb-6">{phase.icon}</span>
           <h2 className="text-white text-xl tracking-wide mb-4">{phase.name}</h2>
           <p className="text-gray-400 text-sm leading-6">{phase.description}</p>
         </motion.div>
