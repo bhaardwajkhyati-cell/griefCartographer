@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { fetchReleasedDrawings } from '@/lib/saveDrawing'
+import { supabase } from '@/lib/supabase'
 import { useRouter } from "next/navigation";
 
 const BUBBLE_SIZES = [180, 220, 150, 260, 190, 230]
@@ -29,6 +30,10 @@ export default function Gallery() {
   const [selectDrawing, setSelectDrawing] = useState(null);
   const router = useRouter();
 
+  const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false)
+  const [feedbackText, setFeedbackText] = useState('')
+  const [feedbackStatus, setFeedbackStatus] = useState('idle') // idle | submitting | success
+
   useEffect(() => {
     let mounted = true
     fetchReleasedDrawings().then((res) => {
@@ -39,6 +44,34 @@ export default function Gallery() {
       mounted = false
     }
   }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowFeedbackPrompt(true)
+    }, 7000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault()
+    if (!feedbackText.trim()) return
+
+    setFeedbackStatus('submitting')
+
+    const { error } = await supabase.from('feedback').insert({
+      message: feedbackText.trim(),
+    })
+
+    if (error) {
+      console.error('Feedback submit failed:', error)
+      setFeedbackStatus('idle')
+      return
+    }
+
+    setFeedbackStatus('success')
+    setFeedbackText('')
+    setTimeout(() => setShowFeedbackPrompt(false), 1200)
+  }
 
   return (
           <> {selectDrawing && (
@@ -80,6 +113,40 @@ export default function Gallery() {
           </motion.div>
         </div>
       )}
+
+      {showFeedbackPrompt && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 backdrop-blur-md p-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="w-full max-w-md"
+          >
+            {feedbackStatus === 'success' ? (
+              <p className="text-center text-gray-300 text-lg">this was received.</p>
+            ) : (
+              <form onSubmit={handleFeedbackSubmit} className="flex flex-col gap-4">
+                <input
+                  autoFocus
+                  type="text"
+                  value={feedbackText}
+                  onChange={(e) => setFeedbackText(e.target.value)}
+                  placeholder="what's this like for you, so far?"
+                  className="w-full bg-transparent border-b border-gray-600 text-white text-center text-lg placeholder-gray-600 focus:outline-none focus:border-gray-300 py-3"
+                />
+                <button
+                  type="submit"
+                  disabled={feedbackStatus === 'submitting'}
+                  className="mx-auto mt-2 px-6 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 hover:border-gray-400 rounded-full transition disabled:opacity-50"
+                >
+                  {feedbackStatus === 'submitting' ? 'sending...' : 'send'}
+                </button>
+              </form>
+            )}
+          </motion.div>
+        </div>
+      )}
+
     <main className="min-h-screen bg-[#0a0a0a] relative overflow-hidden py-24 px-6">
       {/* Ambient fog — same device as the landing page, second one in sage */}
       <div className="absolute top-1/4 left-1/3 w-[600px] h-[400px] rounded-full bg-white opacity-[0.05] blur-[120px] pointer-events-none" />
