@@ -20,8 +20,18 @@ export const metadata ={
     canonical: "/",
   },
   icons: {
-    icon: "/icon.png",
-    shortcut: "/icon.png",
+    icon: [
+      {
+        url: "/icon.png",
+        type: "image/png",
+        sizes: "512x512",
+      },
+      {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+      },
+    ],
+    shortcut: "/favicon.ico",
     apple: "/icon.png",
   },
   openGraph: {
