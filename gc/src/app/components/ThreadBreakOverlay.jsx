@@ -10,7 +10,7 @@ export default function ThreadBreakOverlay({ onComplete }) {
   useEffect(() => {
     if (hasPlayed.current) return;
     hasPlayed.current = true;
-    playSnapSound();
+    
   }, []);
 
   return (
