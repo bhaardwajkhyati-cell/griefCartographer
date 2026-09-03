@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { fetchReleasedDrawings } from '@/lib/saveDrawing'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from "next/navigation";
+import Botanical from '../components/Botanical';
 
 const BUBBLE_SIZES = [180, 220, 150, 260, 190, 230]
 
@@ -52,7 +53,7 @@ export default function Gallery() {
     return () => clearTimeout(timer)
   }, [])
 
-  const handleFeedbackSubmit = async (e) => {
+    const handleFeedbackSubmit = async (e) => {
     e.preventDefault()
     if (!feedbackText.trim()) return
 
@@ -63,7 +64,7 @@ export default function Gallery() {
     })
 
     if (error) {
-      console.error('Feedback submit failed:', error)
+      console.error('Feedback submit failed:', JSON.stringify(error, null, 2))
       setFeedbackStatus('idle')
       return
     }
@@ -114,33 +115,38 @@ export default function Gallery() {
         </div>
       )}
 
-      {showFeedbackPrompt && (
+            {showFeedbackPrompt && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 backdrop-blur-md p-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-            className="w-full max-w-md"
+            className="w-full max-w-xl"
           >
             {feedbackStatus === 'success' ? (
               <p className="text-center text-gray-300 text-lg">this was received.</p>
             ) : (
-              <form onSubmit={handleFeedbackSubmit} className="flex flex-col gap-4">
+              <form onSubmit={handleFeedbackSubmit} className="flex flex-col items-center gap-5">
+                <p className="text-center text-gray-400 text-lg leading-relaxed max-w-md">
+                  please share your feedback — it means a lot to me for improving this project
+                </p>
                 <input
                   autoFocus
                   type="text"
                   value={feedbackText}
                   onChange={(e) => setFeedbackText(e.target.value)}
-                  placeholder="what's this like for you, so far?"
-                  className="w-full bg-transparent border-b border-gray-600 text-white text-center text-lg placeholder-gray-600 focus:outline-none focus:border-gray-300 py-3"
+                  placeholder="type here..."
+                  className="w-full bg-black/40 border border-white/20 rounded-xl text-white text-center text-base placeholder-gray-500 focus:outline-none focus:border-white/40 py-5 px-6 shadow-[0_0_20px_rgba(255,255,255,0.12)] focus:shadow-[0_0_35px_rgba(255,255,255,0.22)] transition-shadow duration-300"
                 />
                 <button
                   type="submit"
                   disabled={feedbackStatus === 'submitting'}
-                  className="mx-auto mt-2 px-6 py-2 text-sm text-gray-400 hover:text-white border border-gray-700 hover:border-gray-400 rounded-full transition disabled:opacity-50"
+                  className="px-8 py-3 text-sm text-gray-300 hover:text-black border border-gray-500 hover:bg-white rounded-full transition-all duration-300 ease-out hover:scale-125 disabled:opacity-50 disabled:hover:scale-100"
                 >
-                  {feedbackStatus === 'submitting' ? 'sending...' : 'send'}
+                  {feedbackStatus === 'submitting' ? 'sending...' : 'Share'}
+
                 </button>
+                <Botanical />
               </form>
             )}
           </motion.div>
