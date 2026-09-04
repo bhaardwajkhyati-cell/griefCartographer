@@ -97,18 +97,25 @@ export default function Theme() {
         </motion.div>
       ))}
     </div>
-      {/* Gallery button */}
+            {/* Gallery and About buttons */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 2, delay: 1.2 }}
-          className="mt-8"
+          className="mt-8 flex items-center gap-4"
         >
           <button
             onClick={() => router.push('/gallery')}
             className="px-6 py-2.5 border border-gray-700 rounded-full text-gray-400 hover:text-white hover:border-gray-400 transition text-sm tracking-widest"
           >
             View Gallery
+          </button>
+
+          <button
+            onClick={() => router.push('/about')}
+            className="px-6 py-2.5 border border-gray-700 rounded-full text-gray-400 hover:text-white hover:border-gray-400 transition text-sm tracking-widest"
+          >
+            About
           </button>
         </motion.div>
         {/* Bottom line */}
