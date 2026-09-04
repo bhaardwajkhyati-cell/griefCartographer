@@ -68,9 +68,9 @@ export default function ReflectionPrompt({ phase, onQuestionSelected }) {
         {current.title}
       </p>
 
-      <h1 className="text-4xl md:text-5xl font-light leading-relaxed text-white font-[family-name:var(--cormorant)]">
+      <h2 className="text-4xl md:text-5xl font-light leading-relaxed text-white font-[family-name:var(--cormorant)]">
         {randomQuestion.text}
-      </h1>
+      </h2>
 
       <p className="mt-6 text-gray-400 leading-8 text-lg">
         {current.reflection}

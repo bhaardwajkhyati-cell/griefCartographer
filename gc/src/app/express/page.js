@@ -71,6 +71,8 @@ function ExpressContent() {
         </button>
       </div>
 
+      <h1 className="sr-only">Express your grief through drawing</h1>
+
       {/* Reflection Question */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
