@@ -1,3 +1,5 @@
+'use client'
+
 import { motion } from 'framer-motion'
 export default function Botanical(){
     return(
@@ -5,7 +7,7 @@ export default function Botanical(){
      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 2, delay: 2 }}
-      className="mt-8"     
+    className="mt-8 w-full flex justify-center"
     >
       <svg width="300" height="60" viewBox="0 0 300 60" fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Main stem */}
