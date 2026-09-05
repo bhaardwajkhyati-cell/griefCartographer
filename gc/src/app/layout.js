@@ -16,9 +16,6 @@ export const metadata ={
   title: "Grief Cartographer",
   description: "Grief Cartographer is a quiet space for reflection, expression, and navigating grief.",
   keywords: ["Grief Cartographer", "grief support", "grief reflection", "emotional healing"],
-  alternates: {
-    canonical: "/",
-  },
   icons: {
     icon: [
       {
