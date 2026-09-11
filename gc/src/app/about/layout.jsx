@@ -1,9 +1,30 @@
 export const metadata = {
-  title: "About — Grief Cartographer",
+  title: "About",
   description:
-    "A reflective space for expressing grief through drawing, inspired by William Odom's research on Photobox — a device designed to release old photographs slowly and unpredictably.",
+    "Learn about Grief Cartographer, a reflective space for expressing grief through drawing and release.",
   alternates: {
     canonical: "/about",
+  },
+  openGraph: {
+    title: "About Grief Cartographer",
+    description: "A reflective space for expressing grief through drawing, memory, and release.",
+    url: "https://griefcartographer.vercel.app/about",
+    siteName: "Grief Cartographer",
+    type: "website",
+    images: [
+      {
+        url: "/icon.png",
+        width: 512,
+        height: 512,
+        alt: "Grief Cartographer about page",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Grief Cartographer",
+    description: "A reflective space for expressing grief through drawing, memory, and release.",
+    images: ["/icon.png"],
   },
 };
 
