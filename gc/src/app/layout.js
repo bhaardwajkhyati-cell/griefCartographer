@@ -13,9 +13,15 @@ const cormorant = Cormorant_Garamond({
  });
 export const metadata ={
   metadataBase: new URL("https://griefcartographer.vercel.app"),
-  title: "Grief Cartographer",
-  description: "Grief Cartographer is a quiet space for reflection, expression, and navigating grief.",
-  keywords: ["Grief Cartographer", "grief support", "grief reflection", "emotional healing"],
+  title: {
+    default: "Grief Cartographer",
+    template: "%s | Grief Cartographer",
+  },
+  description: "Grief Cartographer is a quiet space for reflection, expression, and navigating grief through drawing, memory, and release.",
+  keywords: ["Grief Cartographer", "grief support", "grief reflection", "emotional healing", "express grief through drawing"],
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: [
       {
@@ -33,7 +39,7 @@ export const metadata ={
   },
   openGraph: {
     title: "Grief Cartographer",
-    description: "A quiet space for reflection, expression, and navigating grief.",
+    description: "A quiet space for reflection, expression, and navigating grief through drawing, memory, and release.",
     url: "https://griefcartographer.vercel.app/",
     siteName: "Grief Cartographer",
     type: "website",
@@ -49,7 +55,7 @@ export const metadata ={
   twitter: {
     card: "summary_large_image",
     title: "Grief Cartographer",
-    description: "A quiet space for reflection, expression, and navigating grief.",
+    description: "A quiet space for reflection, expression, and navigating grief through drawing, memory, and release.",
     images: ["/icon.png"],
   },
   robots: {
