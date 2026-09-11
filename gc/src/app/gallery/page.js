@@ -47,11 +47,27 @@ export default function Gallery() {
   }, [])
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const hasDrawn = localStorage.getItem('gc_has_drawn') === 'true'
+    const feedbackShown = localStorage.getItem('gc_feedback_prompt_shown') === 'true'
+
+    if (!hasDrawn || feedbackShown) return
+
     const timer = setTimeout(() => {
       setShowFeedbackPrompt(true)
     }, 7000)
+
     return () => clearTimeout(timer)
   }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    if (showFeedbackPrompt) {
+      localStorage.setItem('gc_feedback_prompt_shown', 'true')
+    }
+  }, [showFeedbackPrompt])
 
     const handleFeedbackSubmit = async (e) => {
     e.preventDefault()
@@ -71,6 +87,9 @@ export default function Gallery() {
 
     setFeedbackStatus('success')
     setFeedbackText('')
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('gc_feedback_prompt_shown', 'true')
+    }
     setTimeout(() => setShowFeedbackPrompt(false), 1200)
   }
 

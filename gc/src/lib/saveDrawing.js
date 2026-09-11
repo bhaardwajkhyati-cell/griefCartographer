@@ -120,6 +120,11 @@ export async function saveDrawing({
       throw dbError;
     }
 
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('gc_has_drawn', 'true');
+      localStorage.setItem('gc_feedback_prompt_shown', 'false');
+    }
+
     return {
       success: true,
       imageUrl,
