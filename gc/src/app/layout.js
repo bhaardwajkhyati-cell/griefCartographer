@@ -14,11 +14,14 @@ const cormorant = Cormorant_Garamond({
 export const metadata ={
   metadataBase: new URL("https://griefcartographer.vercel.app"),
   title: {
-    default: "Grief Cartographer",
+    default: "Grief Cartographer | made by Khyati Bhaardwaj",
     template: "%s | Grief Cartographer",
   },
-  description: "Grief Cartographer is a quiet space for reflection, expression, and navigating grief through drawing, memory, and release.",
-  keywords: ["Grief Cartographer", "grief support", "grief reflection", "emotional healing", "express grief through drawing"],
+  description: "Grief Cartographer is a quiet space for reflection, expression, and navigating grief through drawing, memory, and release. Created and designed by Khyati Bhaardwaj.",
+  keywords: ["Grief Cartographer", "grief support", "grief reflection", "emotional healing", "express grief through drawing", "Khyati Bhaardwaj"],
+  authors: [{ name: "Khyati Bhaardwaj", url: "https://github.com/bhaardwajkhyati-cell" }],
+  creator: "Khyati Bhaardwaj",
+  publisher: "Khyati Bhaardwaj",
   alternates: {
     canonical: "/",
   },
@@ -38,8 +41,8 @@ export const metadata ={
     apple: "/icon.png",
   },
   openGraph: {
-    title: "Grief Cartographer",
-    description: "A quiet space for reflection, expression, and navigating grief through drawing, memory, and release.",
+    title: "Grief Cartographer | made by Khyati Bhaardwaj",
+    description: "A quiet space for reflection, expression, and navigating grief through drawing, memory, and release. Created and designed by Khyati Bhaardwaj.",
     url: "https://griefcartographer.vercel.app/",
     siteName: "Grief Cartographer",
     type: "website",
@@ -54,8 +57,8 @@ export const metadata ={
   },
   twitter: {
     card: "summary_large_image",
-    title: "Grief Cartographer",
-    description: "A quiet space for reflection, expression, and navigating grief through drawing, memory, and release.",
+    title: "Grief Cartographer | made by Khyati Bhaardwaj",
+    description: "A quiet space for reflection, expression, and navigating grief through drawing, memory, and release. Created and designed by Khyati Bhaardwaj.",
     images: ["/icon.png"],
   },
   robots: {
@@ -67,13 +70,32 @@ export const metadata ={
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: "Grief Cartographer",
+  description: "A quiet space for reflection, expression, and navigating grief through drawing, memory, and release.",
+  url: "https://griefcartographer.vercel.app/",
+  creator: {
+    "@type": "Person",
+    name: "Khyati Bhaardwaj",
+    url: "https://github.com/bhaardwajkhyati-cell",
+  },
+};
+
 export default function RootLayout({children}){
   return(
     <html 
       lang = "en"
       className={`${cormorant.variable} ${dancing.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
