@@ -3,8 +3,7 @@ import { useRouter } from "next/navigation";
 import { motion } from 'framer-motion'
 import StarParticles from '../components/StarParticles'
 import Botanical from '../components/Botanical'
-import { useEffect } from "react";
-import { getSessionId } from "@/lib/session";
+import { createClient } from '@/lib/supabaseBrowser'
 
 const phases = [
   {
@@ -41,11 +40,25 @@ const phases = [
 
 export default function Theme() {
   const router = useRouter();
-  useEffect(() => {
-      getSessionId().then((id) => {
-        console.log("Supabase anonymous user ID:", id);
-      });
-    }, []);
+
+  const handlePhaseSelect = async (phaseId) => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user || user.is_anonymous) {
+      router.push('/login?next=%2Ftheme')
+      return
+    }
+
+    if (user.user_metadata?.interview_completed !== true) {
+      const next = `/express?phase=${encodeURIComponent(phaseId)}`
+      router.push(`/interview?next=${encodeURIComponent(next)}`)
+      return
+    }
+
+    router.push(`/express?phase=${phaseId}`)
+  }
+
   return (
     <main className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center relative overflow-hidden px-8 pt-16">
 
@@ -86,7 +99,7 @@ export default function Theme() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: index * 0.2 }}
-          onClick={() => router.push(`/express?phase=${phase.id}`)}
+          onClick={() => handlePhaseSelect(phase.id)}
           className={`border border-gray-700 rounded-xl p-6 w-full flex flex-col items-center text-center cursor-pointer transition-all duration-500 hover:border-gray-300 hover:bg-[#161616] hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]
           ${index === 4 ? 'col-span-2 lg:col-span-1' : ''}
         `}

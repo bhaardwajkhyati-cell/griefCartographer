@@ -20,6 +20,10 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Password recovery
+
+In Supabase, add your app's `/auth/callback` URL to **Authentication > URL Configuration > Redirect URLs** (for example, `http://localhost:3000/auth/callback` and `https://your-domain.com/auth/callback`). Password recovery emails use this callback before sending the user to the reset-password page.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -1,5 +1,6 @@
 import { Cormorant_Garamond , Dancing_Script } from "next/font/google";
 import "./globals.css";
+import SiteNav from "./components/SiteNav";
 
 const cormorant = Cormorant_Garamond({
   variable: "---cormorant",
@@ -90,6 +91,7 @@ export default function RootLayout({children}){
       className={`${cormorant.variable} ${dancing.variable} h-full`}
     >
       <body className="min-h-full flex flex-col">
+        <SiteNav />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -53,7 +53,7 @@ function ExpressContent() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center px-8 py-10">
+    <main className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center px-8 pt-24 pb-10">
 
       {/* Header */}
       <div className="w-full max-w-5xl flex justify-between items-center mb-10">
