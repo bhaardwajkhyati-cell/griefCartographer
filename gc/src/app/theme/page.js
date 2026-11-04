@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { motion } from 'framer-motion'
 import StarParticles from '../components/StarParticles'
 import Botanical from '../components/Botanical'
-import { createClient } from '@/lib/supabaseBrowser'
 
 const phases = [
   {
@@ -41,22 +40,16 @@ const phases = [
 export default function Theme() {
   const router = useRouter();
 
-  const handlePhaseSelect = async (phaseId) => {
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+  const handlePhaseSelect = (phaseId) => {
+    const isReviewerMode = new URLSearchParams(window.location.search).get('mode') === 'reviewer'
 
-    if (!user || user.is_anonymous) {
-      router.push('/login?next=%2Ftheme')
-      return
-    }
-
-    if (user.user_metadata?.interview_completed !== true) {
+    if (!isReviewerMode) {
       const next = `/express?phase=${encodeURIComponent(phaseId)}`
-      router.push(`/interview?next=${encodeURIComponent(next)}`)
+      router.push(`/login?next=${encodeURIComponent(next)}`)
       return
     }
 
-    router.push(`/express?phase=${phaseId}`)
+    router.push(`/express?phase=${encodeURIComponent(phaseId)}&mode=reviewer`)
   }
 
   return (
