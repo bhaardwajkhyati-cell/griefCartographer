@@ -7,13 +7,25 @@ import { createClient } from '@/lib/supabaseBrowser'
 const SIGNUP_COOLDOWN_MS = 60_000
 const SIGNUP_COOLDOWN_KEY = 'signup_confirmation_cooldown_until'
 
-function continueAfterLogin(router, user) {
+function getRequestedNextPath() {
+  const requestedNext = new URLSearchParams(window.location.search).get('next')
+  return requestedNext?.startsWith('/') && !requestedNext.startsWith('//') && !requestedNext.startsWith('/\\')
+    ? requestedNext
+    : '/theme'
+}
+
+function continueAfterLogin(router, user, nextPath) {
   const completedInterview = user?.user_metadata?.interview_completed === true
-  router.replace(completedInterview ? '/theme' : '/interview?next=%2Ftheme')
+  router.replace(
+    completedInterview
+      ? nextPath
+      : `/interview?next=${encodeURIComponent(nextPath)}`
+  )
   router.refresh()
 }
 
 export default function LoginPage() {
+  const [accessMode, setAccessMode] = useState('choose')
   const [mode, setMode] = useState('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -27,6 +39,13 @@ export default function LoginPage() {
   })
   const [signupCooldownRemaining, setSignupCooldownRemaining] = useState(0)
   const router = useRouter()
+
+  const continueAsReviewer = () => {
+    const nextUrl = new URL(getRequestedNextPath(), window.location.origin)
+    nextUrl.searchParams.set('mode', 'reviewer')
+    router.replace(`${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`)
+    router.refresh()
+  }
 
   useEffect(() => {
     if (!signupCooldownUntil) return
@@ -124,7 +143,7 @@ export default function LoginPage() {
       return
     }
 
-    continueAfterLogin(router, data.user)
+    continueAfterLogin(router, data.user, getRequestedNextPath())
   }
 
   return (
@@ -133,15 +152,42 @@ export default function LoginPage() {
       style={{ background: 'var(--background)', color: 'var(--foreground)' }}
     >
       <div className="w-full max-w-sm canvas-border rounded-lg p-8">
-        <h1 className="text-2xl font-light mb-8 text-center">
-          {mode === 'signin'
-            ? 'Log in'
-            : mode === 'signup'
-              ? 'Create an account'
-              : 'Reset your password'}
-        </h1>
+        {accessMode === 'choose' ? (
+          <>
+            <h1 className="text-2xl font-light mb-8 text-center">Choose how to continue</h1>
+            <div className="space-y-4">
+              <button
+                type="button"
+                onClick={() => setAccessMode('signin')}
+                className="w-full py-2 rounded transition-colors"
+                style={{ border: '1px solid rgba(237,237,237,0.3)' }}
+              >
+                Sign in
+              </button>
+              <button
+                type="button"
+                onClick={continueAsReviewer}
+                className="w-full py-2 rounded transition-colors"
+                style={{ border: '1px solid rgba(237,237,237,0.3)' }}
+              >
+                Reviewer mode
+              </button>
+              <p className="text-sm text-center text-gray-400">
+                Reviewer mode skips sign-in and the questionnaire.
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl font-light mb-8 text-center">
+              {mode === 'signin'
+                ? 'Log in'
+                : mode === 'signup'
+                  ? 'Create an account'
+                  : 'Reset your password'}
+            </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5">
           <input
             type="email"
             placeholder="Email"
@@ -236,32 +282,45 @@ export default function LoginPage() {
                     ? `Wait ${signupCooldownRemaining}s`
                     : 'Sign up'}
           </button>
-        </form>
+            </form>
 
-        {mode !== 'recovery' && (
-          <button
-            onClick={() => {
-              setMode(mode === 'signup' ? 'signin' : 'signup')
-              setError(null)
-              setMessage(null)
-            }}
-            className="mt-6 text-sm underline block mx-auto opacity-60 hover:opacity-90 transition-opacity"
-          >
-            {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Log in'}
-          </button>
-        )}
-        {mode === 'recovery' && (
-          <button
-            type="button"
-            onClick={() => {
-              setMode('signin')
-              setError(null)
-              setMessage(null)
-            }}
-            className="mt-6 text-sm underline block mx-auto opacity-60 hover:opacity-90 transition-opacity"
-          >
-            Back to log in
-          </button>
+            {mode !== 'recovery' && (
+              <button
+                onClick={() => {
+                  setMode(mode === 'signup' ? 'signin' : 'signup')
+                  setError(null)
+                  setMessage(null)
+                }}
+                className="mt-6 text-sm underline block mx-auto opacity-60 hover:opacity-90 transition-opacity"
+              >
+                {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Log in'}
+              </button>
+            )}
+            {mode === 'recovery' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('signin')
+                  setError(null)
+                  setMessage(null)
+                }}
+                className="mt-6 text-sm underline block mx-auto opacity-60 hover:opacity-90 transition-opacity"
+              >
+                Back to log in
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setAccessMode('choose')
+                setError(null)
+                setMessage(null)
+              }}
+              className="mt-6 text-sm underline block mx-auto opacity-60 hover:opacity-90 transition-opacity"
+            >
+              Back to access options
+            </button>
+          </>
         )}
       </div>
     </div>

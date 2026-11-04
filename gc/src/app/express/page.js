@@ -16,6 +16,7 @@ function ExpressContent() {
   const canvasRef = useRef(null);
 
   const phase = searchParams.get("phase") || "fog";
+  const isReviewerMode = searchParams.get("mode") === "reviewer";
 
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -58,7 +59,7 @@ function ExpressContent() {
       {/* Header */}
       <div className="w-full max-w-5xl flex justify-between items-center mb-10">
         <button
-          onClick={() => router.push("/theme")}
+          onClick={() => router.push(isReviewerMode ? "/theme?mode=reviewer" : "/theme")}
           className="text-gray-500 hover:text-white transition"
         >
           ← Back

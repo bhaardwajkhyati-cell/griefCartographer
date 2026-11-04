@@ -27,26 +27,32 @@ export async function middleware(request) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (request.nextUrl.pathname === '/express' && (!user || user.is_anonymous)) {
-    const loginUrl = request.nextUrl.clone()
-    loginUrl.pathname = '/login'
-    loginUrl.search = ''
-    loginUrl.searchParams.set('next', '/theme')
-    return NextResponse.redirect(loginUrl)
-  }
-
-  if (
+  const isReviewerMode =
     request.nextUrl.pathname === '/express' &&
-    user.user_metadata?.interview_completed !== true
-  ) {
-    const interviewUrl = request.nextUrl.clone()
-    interviewUrl.pathname = '/interview'
-    interviewUrl.search = ''
-    interviewUrl.searchParams.set(
-      'next',
-      `${request.nextUrl.pathname}${request.nextUrl.search}`
-    )
-    return NextResponse.redirect(interviewUrl)
+    request.nextUrl.searchParams.get('mode') === 'reviewer'
+
+  if (!isReviewerMode && request.nextUrl.pathname === '/express') {
+    if (!user || user.is_anonymous) {
+      const loginUrl = request.nextUrl.clone()
+      loginUrl.pathname = '/login'
+      loginUrl.search = ''
+      loginUrl.searchParams.set(
+        'next',
+        `${request.nextUrl.pathname}${request.nextUrl.search}`
+      )
+      return NextResponse.redirect(loginUrl)
+    }
+
+    if (user.user_metadata?.interview_completed !== true) {
+      const interviewUrl = request.nextUrl.clone()
+      interviewUrl.pathname = '/interview'
+      interviewUrl.search = ''
+      interviewUrl.searchParams.set(
+        'next',
+        `${request.nextUrl.pathname}${request.nextUrl.search}`
+      )
+      return NextResponse.redirect(interviewUrl)
+    }
   }
 
   return supabaseResponse
